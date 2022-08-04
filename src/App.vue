@@ -63,12 +63,13 @@ let type = ref({
   Bool: false
 })
 
+// в этом массиве будут храниться объекты, хранящие информацию, заполненную пользователем в фильтре
 let Request_arrey = []
 
-const textValue = ref('')
 
 const selected = ref('')
 
+// объекты, хранящие информацию полей
 const RequestContent = ref({
   Code: null,
   Caption: null,
@@ -116,15 +117,20 @@ const RequestContent_for_bool = ref({
   }
 })
 
+// используеться для создания файла json
 let file = new Blob()
 
+// объект json, используемый для выхоного запроса
 let json_obj;
-
+// массив входных объектов оыщт
 var json = ref()
+// флаг, отображающий поступление входного json
 var inported = ref()
 console.log(json)
 
 //___________TEST JSON INPUT______________
+
+// загоняю json из таска, чтобы не вводить его каждый раз
 const some_json = ref('[\n' +
     '\t{\n' +
     '\t\t"code": "field1",\n' +
@@ -143,16 +149,18 @@ const some_json = ref('[\n' +
     '\t}\n' +
     ']')
 
+// функция импорта поступившего json в массив объектов
 function JSON_import() {
   console.log(json)
   console.log(json.length)
   console.log(json.length!==undefined)
   json.value = JSON.parse(some_json.value);
-
   inported.value = true
-
   console.log(json.value)
   console.log(inported.value)
+
+  // далее идет ряд функций, реализовывающий функционал фильтра, но через изменения дерева в рантайме
+  // это достойно гифки "говно, переделывай", так что это дело я закоментил, но пока не почистил, пусть лежит
 /*
   function createDiv(className, N, type){
     var div = document.createElement(type);
@@ -273,7 +281,7 @@ function JSON_import() {
 
 
 
-
+// старая функция для определения типа (я использовал ее для генератора запроса, но теперь скорее всего она не будет акктуальна)
 function choise() {
   type.value.Num = (selected.value === "Number")
   type.value.Str = (selected.value === "String")
@@ -281,15 +289,16 @@ function choise() {
   console.log(inported.value)
 }
 
+// пробег по массиву объектов, заполняемому на основе
 function AddClick() {
   for (var i = 0; i < Request_arrey.length; i++) {
     create_requet(Request_arrey[i])
   }
 }
 
+// формируем вывод заполненных объектов в формате json
 function create_requet (content){
   RequestContent.value.Type = selected.value
-
   json_obj = JSON.stringify(content.value, (key, value) =>
   {
     if (value !== null && value !== "") return value
@@ -299,8 +308,9 @@ function create_requet (content){
   console.log(json_obj)
 
   ////// try to display
+  // я понимаю, что тут я перевожу из объектов в json и обратно, но это я сделал специально для
+  // собственного понимания работы с json
   var data = JSON.parse(json_obj);
-
   console.log(data)
   var header = '<h3>Name for User: ' + data.Caption + '</h3>';
   var list = '';
@@ -318,18 +328,14 @@ function create_requet (content){
       list += '<li>' + i + ': ' + data[i] + '</li>';
     }
   }
-
-
-
   document.getElementById('vis_1').innerHTML += header;
   document.getElementById('vis_1').innerHTML +=  list;
-
-
 
   // создаем файл
   if (file.type==='application/json'){
     file = new Blob(
         // сериализуем данные
+        // (о чем и отмечал, что перевожу туда-обратно этот измученный json, мне было интересно глянуть как он себя ведет)
         [file,",", JSON.stringify(data)], {
           type: 'application/json'
         }
@@ -343,7 +349,6 @@ function create_requet (content){
         }
     )
   }
-
 }
 
 
@@ -355,7 +360,8 @@ function Request() {
       }
   )
 
-  // создаем элемент "a"
+  // добавление ссылочки на скачивание json файла
+  // создаем элемент
   const link = document.createElement('a')
   // привязываем атрибут "href" тега "a" к созданному файлу
   link.setAttribute('href', URL.createObjectURL(file))
