@@ -4,9 +4,18 @@ import Form from "../components/Form.vue";
 
 export default {
   name: "Filter",
+  data() {
+    return {
+      show: true
+    }
+  },
   components: {Form},
   props: {
     filterId: {
+      type: String,
+      default: ""
+    },
+    filterCaption: {
       type: String,
       default: ""
     },
@@ -20,8 +29,12 @@ export default {
 
 
 <template>
+  <span class="Min_Panel">
+          <h1 class="MainText">{{filterCaption}}</h1>
+          <button class="PlussButton" @click="show = !show"> <span class="MainText">Развернуть</span> </button>
+  </span>
 
-  <div class="Card" v-bind:id="filterId" v-if="filterType==='number'">
+  <div class="Card" v-bind:id="filterId" v-if="filterType==='number' && show">
     <Form
         placeholder="Больше"
         inputType="number"
@@ -42,7 +55,7 @@ export default {
   </div>
 
 
-  <div class="Card" v-bind:id="filterId" v-if="filterType==='string'">
+  <div class="Card" v-bind:id="filterId" v-if="filterType==='string' && show">
     <Form
         placeholder="Содержит"
         inputType="text"
@@ -53,7 +66,7 @@ export default {
     ></Form>
   </div>
 
-  <div class="Card" v-bind:id="filterId" v-if="filterType==='bool'">
+  <div class="Card" v-bind:id="filterId" v-if="filterType==='bool' && show">
     <Form
         inputType="checkbox"
     ></Form>

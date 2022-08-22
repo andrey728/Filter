@@ -22,16 +22,15 @@
     </select>
   </div>
 
-    <div class="FilterCraft" id = 'n' v-if="inported" >
 
+    <div class="FilterCraft" id = 'n' v-if="inported" >
+      <Post>
+
+      </Post>
       <div class="Filter_Card"
            v-for="(jso, i) in json">
-        <span class="Min_Panel">
-          <h1 class="MainText">{{jso.caption}}</h1>
-          <button class="PlussButton"> <span class="MainText">Развернуть</span> </button>
-        </span>
-
         <Filter
+            :filter-caption="jso.caption"
             :filter-id="jso.code"
             :filterType="jso.type"
         ></Filter>
@@ -55,7 +54,7 @@
 import { ref } from 'vue'
 import Form from "./components/Form.vue";
 import Filter from "./components/Filter.vue";
-
+import Post from "./components/Post.vue";
 
 let type = ref({
   Num: false,
