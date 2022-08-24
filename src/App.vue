@@ -24,9 +24,6 @@
 
 
     <div class="FilterCraft" id = 'n' v-if="inported" >
-      <Post>
-
-      </Post>
       <div class="Filter_Card"
            v-for="(jso, i) in json">
         <Filter
@@ -54,7 +51,8 @@
 import { ref } from 'vue'
 import Form from "./components/Form.vue";
 import Filter from "./components/Filter.vue";
-import Post from "./components/Post.vue";
+import Store from "./Store.js";
+
 
 let type = ref({
   Num: false,
@@ -72,7 +70,6 @@ const selected = ref('')
 const RequestContent = ref({
   Code: null,
   Caption: null,
-  Type: selected.value,
   Like: null,
   GT: null,
   LT: null,
@@ -145,6 +142,11 @@ const some_json = ref('[\n' +
     '\t\t"code": "field4",\n' +
     '\t\t"caption": "Работает",\n' +
     '\t\t"type": "bool"\n' +
+    '\t},\n' +
+    '\t{\n' +
+    '\t\t"code": "field7",\n' +
+    '\t\t"caption": "Название",\n' +
+    '\t\t"type": "string"\n' +
     '\t}\n' +
     ']')
 

@@ -1,13 +1,12 @@
 <script lang="ts">
-import { defineComponent } from "vue";
+import {ref, reactive, defineComponent } from "vue";
 
 
 export default defineComponent({
   name: "TextField",
   props: {
     textValue: {
-      type: String,
-      default: '',
+      default: ref(0),
     },
     placeholder: {
       type: String,
@@ -19,16 +18,20 @@ export default defineComponent({
     }
   },
   emits: ['update:textValue', 'onEnter'],
-  setup(props, {emit}) {
+  setup(props, { attrs, slots, emit, expose }) {
     const onEnter = () => {
       emit('onEnter');
     }
 
     const searchText = (event: any) => {
-      emit('update:textValue', event.target.value);
+      props.textValue =  event.target.value
+      emit("update:textValue", event.target.value);
+      console.log(props.textValue)
+      console.log(event.target.value)
     }
 
     return {
+
       onEnter,
       searchText,
     }
@@ -46,10 +49,8 @@ export default defineComponent({
   <input
       class="cherecters"
       :type="inputType"
-
       :value="textValue"
       @input="searchText"
-      @keydown.enter="onEnter"
       :placeholder="placeholder"
   />
 </template>
