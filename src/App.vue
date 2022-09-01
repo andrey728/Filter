@@ -25,11 +25,11 @@
 
     <div class="FilterCraft" id = 'n' v-if="inported" >
       <div class="Filter_Card"
-           v-for="(jso, i) in json">
+           v-for="(feel, i) in store.state.inputed_json">
         <Filter
-            :filter-caption="jso.caption"
-            :filter-id="jso.code"
-            :filterType="jso.type"
+            :filter-caption="feel.caption"
+            :filter-id="feel.code"
+            :filterType="feel.type"
         ></Filter>
 
       </div>
@@ -46,12 +46,12 @@
 
 
 //___________________________
-
+// попробовать словарь с ключем в виде поля и значением в виде реактивного объекта, включаемого в Filter
 <script setup>
 import { ref } from 'vue'
 import Form from "./components/Form.vue";
 import Filter from "./components/Filter.vue";
-import Store from "./Store.js";
+import store from "./Store.js";
 
 
 let type = ref({
@@ -152,13 +152,17 @@ const some_json = ref('[\n' +
 
 // функция импорта поступившего json в массив объектов
 function JSON_import() {
-  console.log(json)
-  console.log(json.length)
-  console.log(json.length!==undefined)
+  store.commit("REFRESH")
   json.value = JSON.parse(some_json.value);
   inported.value = true
-  console.log(json.value)
-  console.log(inported.value)
+  store.commit("SET_INPUTED_JSON_TO_STATE", JSON.parse(some_json.value))
+  console.log(store.state.inputed_json)
+  let feel = store.state.inputed_json
+  for (var i=0; i < feel.length; i++) {
+    store.commit("GENERATE_RECURSE_OBJ", feel[i].code)
+  }
+  console.log('Формирование объектов',store.state.recuest_objects)
+
 
   // далее идет ряд функций, реализовывающий функционал фильтра, но через изменения дерева в рантайме
   // это достойно гифки "говно, переделывай", так что это дело я закоментил, но пока не почистил, пусть лежит
