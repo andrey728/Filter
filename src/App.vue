@@ -30,6 +30,7 @@
             :filter-caption="feel.caption"
             :filter-id="feel.code"
             :filterType="feel.type"
+
         ></Filter>
 
       </div>
@@ -54,6 +55,10 @@ import Filter from "./components/Filter.vue";
 import store from "./Store.js";
 
 
+
+
+
+
 let type = ref({
   Num: false,
   Str: false,
@@ -66,52 +71,6 @@ let Request_arrey = []
 
 const selected = ref('')
 
-// объекты, хранящие информацию полей
-const RequestContent = ref({
-  Code: null,
-  Caption: null,
-  Like: null,
-  GT: null,
-  LT: null,
-  GTE: null,
-  LTE: null,
-  EQ: null,
-  NEQ: null
-})
-
-const RequestContent_for_num = ref({
-  Code: null,
-  Caption: null,
-  Type: "Number",
-  Values: {
-    GT: null,
-    LT: null,
-    GTE: null,
-    LTE: null,
-    EQ: null,
-    NEQ: null
-  }
-})
-
-const RequestContent_for_str = ref({
-  Code: null,
-  Caption: null,
-  Type: "String",
-  Values: {
-    Like: null,
-    EQ: null,
-    NEQ: null
-  }
-})
-
-const RequestContent_for_bool = ref({
-  Code: null,
-  Caption: null,
-  Type: "Bool",
-  Values: {
-    EQ: null
-  }
-})
 
 // используеться для создания файла json
 let file = new Blob()
@@ -157,11 +116,21 @@ function JSON_import() {
   inported.value = true
   store.commit("SET_INPUTED_JSON_TO_STATE", JSON.parse(some_json.value))
   console.log(store.state.inputed_json)
-  let feel = store.state.inputed_json
-  for (var i=0; i < feel.length; i++) {
-    store.commit("GENERATE_RECURSE_OBJ", feel[i].code)
+  let field = store.state.inputed_json
+  for (var i=0; i < field.length; i++) {
+      store.commit("GENERATE_RECURSE_OBJ", field[i])
   }
   console.log('Формирование объектов',store.state.recuest_objects)
+
+  /*let code = 'field2'
+  for(const dic in store.state.recuest_objects) {
+    console.log(dic)
+    if (store.state.recuest_objects[dic].code === code) {
+      console.log(store.state.recuest_objects[dic].values)
+    }
+  }*/
+  console.log(store.commit("TAKE",'field7'))
+
 
 
   // далее идет ряд функций, реализовывающий функционал фильтра, но через изменения дерева в рантайме
@@ -296,15 +265,14 @@ function choise() {
 
 // пробег по массиву объектов, заполняемому на основе
 function AddClick() {
-  for (var i = 0; i < Request_arrey.length; i++) {
-    create_requet(Request_arrey[i])
+  for (var i = 0; i < store.state.recuest_objects.length; i++) {
+    create_requet(store.state.recuest_objects[i])
   }
 }
 
 // формируем вывод заполненных объектов в формате json
 function create_requet (content){
-  RequestContent.value.Type = selected.value
-  json_obj = JSON.stringify(content.value, (key, value) =>
+  json_obj = JSON.stringify(content, (key, value) =>
   {
     if (value !== null && value !== "") return value
     else if (key === "Value") return key.value

@@ -12,20 +12,69 @@ const store = createStore({
         SET_INPUTED_JSON_TO_STATE: (state, inputed_json) => {
             state.inputed_json = inputed_json;
         },
-        GENERATE_RECURSE_OBJ: (state, code) => {
-            state.recuest_objects.push({
-                code: code,
-                values: {}
+
+        GENERATE_RECURSE_OBJ: (state, field) => {
+            console.log(field)
+            if (field.type === 'number') {
+                state.recuest_objects.push({
+                    code: field.code,
+                    values: {
+                        GT: null,
+                        LT: null,
+                        GTE: null,
+                        LTE: null,
+                        EQ: null,
+                        NEQ: null
+                    }
                 });
+            }
+            if (field.type === 'string') {
+                state.recuest_objects.push({
+                    code: field.code,
+                    values: {
+                        Like: null,
+                        NEQ: null
+                    }
+                });
+            }
+            if (field.type === 'bool') {
+                state.recuest_objects.push({
+                    code: field.code,
+                    values: {
+                        EQ: null
+                    }
+                });
+            }
         },
+
         REFRESH: (state) => {
             state.recuest_objects = []
             state.inputed_json = []
         },
         NEW_COUNT_TO_STATE: (state, new_count) => {
             state.count = new_count;
+        },
+
+        FILTER_FIELD: (state, payload) => {
+            for (const i in state.recuest_objects) {
+                if (state.recuest_objects[i].code === payload.code) {
+                    state.recuest_objects[i].values[payload.params] = payload.value
+                    //return state.recuest_objects[i].values;
+                }
+            }
+        },
+
+        TAKE (state, code) {
+            console.log(code)
+            for (const i in state.recuest_objects) {
+                if (state.recuest_objects[i].code === code) {
+                    console.log('гетер', state.recuest_objects[i].values)
+                    return state.recuest_objects[i].values;
+                }
+            }
         }
-    },
+
+        },
 
     actions: {
         INPUT_JSON({comit}, inputed_json) {
@@ -45,7 +94,8 @@ const store = createStore({
         },
         RECUEST_OBJECTS(state){
             return state.recuest_objects;
-        }
+        },
+
     }
 })
 
