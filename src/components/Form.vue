@@ -1,12 +1,14 @@
 <script lang="ts">
 import {ref, reactive, defineComponent } from "vue";
+import store from "../Store.js";
+import { mapMutations } from "vuex";
 
 
 export default defineComponent({
   name: "TextField",
   props: {
     textValue: {
-      default: ref(0),
+      default: ref(null)
     },
     placeholder: {
       type: String,
@@ -15,19 +17,31 @@ export default defineComponent({
     inputType: {
       type: String,
       default: "number"
+    },
+    filterParams: {
+      type: String,
+      default: ""
+    },
+    cardID: {
+      type: String,
+      default: ""
     }
   },
-  emits: ['update:textValue', 'onEnter'],
+  emits: ['update:textValue', 'event.target.value'],
   setup(props, { attrs, slots, emit, expose }) {
+
+
     const onEnter = () => {
       emit('onEnter');
     }
 
     const searchText = (event: any) => {
-      props.textValue =  event.target.value
-      emit("update:textValue", event.target.value);
-      console.log(props.textValue)
-      console.log(event.target.value)
+      props.textValue.value = event.target.value
+      store.commit("FILTER_FIELD", {
+        code: props.cardID,
+        params: props.filterParams,
+        value: event.target.value
+      })
     }
 
     return {
