@@ -1,14 +1,18 @@
 <script lang="ts">
 import {ref, reactive, defineComponent } from "vue";
 import store from "../Store.js";
-import { mapMutations } from "vuex";
+import { mapMutations, mapGetters } from "vuex";
 
 
 export default defineComponent({
   name: "TextField",
+
+  computed: mapGetters(['REQUEST_VALIDATORS', 'VAL_LEN']),
+
+
   props: {
     textValue: {
-      default: ref(null)
+      default: ""
     },
     placeholder: {
       type: String,
@@ -25,19 +29,28 @@ export default defineComponent({
     cardID: {
       type: String,
       default: ""
-    }
+    },
+    validators: {},
+
   },
   emits: ['update:textValue', 'event.target.value'],
   setup(props, { attrs, slots, emit, expose }) {
 
+    let val = true
 
     const onEnter = () => {
       emit('onEnter');
     }
 
     const searchText = (event: any) => {
-      props.textValue.value = event.target.value
-      store.commit("FILTER_FIELD", {
+      if(props.inputType === "checkbox") {
+        store.commit("FILTER_FIELD", {
+          code: props.cardID,
+          params: props.filterParams,
+          value: event.target.checked
+        })
+      }
+      else store.commit("FILTER_FIELD", {
         code: props.cardID,
         params: props.filterParams,
         value: event.target.value
@@ -45,7 +58,7 @@ export default defineComponent({
     }
 
     return {
-
+      val,
       onEnter,
       searchText,
     }
@@ -59,7 +72,6 @@ export default defineComponent({
 
 <template>
 
-
   <input
       class="cherecters"
       :type="inputType"
@@ -67,4 +79,7 @@ export default defineComponent({
       @input="searchText"
       :placeholder="placeholder"
   />
+
+
+
 </template>

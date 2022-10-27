@@ -7,12 +7,9 @@ import {mapMutations,mapGetters} from "vuex";
 export default {
   name: "Filter",
   data() {
-
     return {
-
-      show: false
+      show: false,
     }
-
   },
 
 
@@ -43,10 +40,11 @@ export default {
     filterValue: {
       type: ref('гусеница')
     },
-    request: {}
+    validators: {}
   },
   setup(props) {
     console.log(props.filterType)
+
   }
 }
 
@@ -69,6 +67,7 @@ export default {
         inputType="number"
         :card-i-d="filterId"
         :filter-params="'GT'"
+        :validators="validators"
     ></Form>
 
     <Form
@@ -76,19 +75,48 @@ export default {
         inputTypr="number"
         :card-i-d="filterId"
         :filter-params="'LT'"
+        :validators="validators"
     ></Form>
-    <Form
+    <Form v-if="!validators.select_range"
         placeholder="Равен"
         inputTypr="number"
         :card-i-d="filterId"
         :filter-params="'EQ'"
+        :validators="validators"
     ></Form>
-    <Form
+    <Form v-else
+          placeholder="Равен"
+          inputTypr="number"
+          :card-i-d="filterId"
+          :filter-params="'EQ'"
+          :validators="validators"
+          style="background: #9C9A9A"
+          disabled
+    ></Form>
+    <Form v-if="!validators.select_range"
         placeholder="Не равен"
         inputTypr="number"
         :card-i-d="filterId"
         :filter-params="'NEQ'"
+        :validators="validators"
     ></Form>
+    <Form v-else
+        placeholder="Не равен"
+        inputTypr="number"
+        :card-i-d="filterId"
+        :filter-params="'NEQ'"
+        :validators="validators"
+          style="background: #9C9A9A"
+          disabled
+    ></Form>
+
+    <div v-if="validators">
+      <h1
+          class="MainText"
+          v-if="validators.errors"
+          style="color: #ee4c4c; margin: 0px; font-size: 19px"> Некорректные данные диапозона! </h1>
+    </div>
+
   </form>
 
 

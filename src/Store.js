@@ -10,12 +10,18 @@ const correctRange = (gt, lt) => {
     return !((gt - lt) >= 0)
 }
 
+const inRange = (gt, lt, num) => {
+    return (gt <= num & num >= lt)
+}
+
 // Create a new store instance.
 const store = createStore({
     state: {
         inputed_json: [],
-        recuest_objects: {},
-        request_validators: {}
+        request_objects: {},
+        request_validators: {},
+        request_json: ''
+
     },
     mutations: {
         SET_INPUTED_JSON_TO_STATE: (state, inputed_json) => {
@@ -24,13 +30,13 @@ const store = createStore({
 
         GENERATE_RECURSE_OBJ: (state, field) => {
             state.request_validators[field.code] = {
-                errors: null,
+                errors: false,
                 select_range: false,
                 minLength: {}
             }
 
             if (field.type === 'number') {
-                state.recuest_objects[field.code] = {
+                state.request_objects[field.code] = {
                     GT: null,
                     LT: null,
                     GTE: null,
@@ -42,60 +48,91 @@ const store = createStore({
 
             }
             if (field.type === 'string') {
-                state.recuest_objects[field.code] = {
+                state.request_objects[field.code] = {
                     Like: null,
                     NEQ: null
                 }
 
             }
             if (field.type === 'bool') {
-                state.recuest_objects[field.code] = {
+                state.request_objects[field.code] = {
                     EQ: null
                 }
 
             }
-            console.log('gen', state.recuest_objects)
         },
 
         REFRESH: (state) => {
-            state.recuest_objects = []
+            state.request_objects = {}
             state.inputed_json = []
         },
 
         VALIDATORS_CHENGES: (state, payload) => {
             // отметка заполняемости
             state.request_validators[payload.code].minLength[payload.params] = minLength(
-                1, state.recuest_objects[payload.code][payload.params]
+                1, state.request_objects[payload.code][payload.params]
             )
             // отметка заполнения диапозона
             state.request_validators[payload.code].select_range = !!(
                 state.request_validators[payload.code].minLength['GT']
-                &
+                ||
                 state.request_validators[payload.code].minLength['LT']
             )
-            console.log(state.request_validators[payload.code])
+
+
             // проверка корявости диапозона
             if(state.request_validators[payload.code].select_range) {
-                console.log('ща чекать будем')
-                console.log(state.recuest_objects[payload.code])
-                state.request_validators[payload.code].errors = !correctRange(
-                    state.recuest_objects[payload.code]['GT'],
-                    state.recuest_objects[payload.code]['LT']
+                state.request_validators[payload.code].errors = (!correctRange(
+                    state.request_objects[payload.code]['GT'],
+                    state.request_objects[payload.code]['LT']
+                    )
+                    &&
+                    !!(
+                    state.request_validators[payload.code].minLength['GT']
+                    &&
+                    state.request_validators[payload.code].minLength['LT']
+                    )
                 )
-                console.log(state.request_validators[payload.code].errors)
             }
         },
 
         FILTER_FIELD: (state, payload) => {
-            state.recuest_objects[payload.code][payload.params] = payload.value
+            state.request_objects[payload.code][payload.params] = payload.value
             store.commit('VALIDATORS_CHENGES', payload)
+            let error_flag = false
+            for (const i in state.request_validators){
+                if(state.request_validators[i].errors) error_flag = true
+            }
+            if(!error_flag) store.commit('REQUEST_JSON')
+        },
 
+        REQUEST_JSON: (state) => {
+/*
+            for(const i in state.request_objects){
+                state.request_json.push(
+                    JSON.stringify(state.request_objects[i], (key, value) =>
+                {
+                    if (value !== null && value !== "") {
+                        console.log('value', value)
+                        return value
+                    }
+                },2))
+
+            }
+            console.log('json', state.request_json)
+*/
+            state.request_json = JSON.stringify(state.request_objects, (key, value) =>
+            {
+                if (value !== null && value !== "") {
+                    return value
+                }
+            },4)
         },
 
         TAKE (state, code) {
-            for (const i in state.recuest_objects) {
-                if (state.recuest_objects[i].code === code) {
-                    return state.recuest_objects[i].values;
+            for (const i in state.request_objects) {
+                if (state.request_objects[i].code === code) {
+                    return state.request_objects[i].values;
                 }
             }
         }
@@ -116,9 +153,15 @@ const store = createStore({
         INPUTED_JSON(state){
             return state.inputed_json;
         },
-        RECUEST_OBJECTS(state){
-            return state.recuest_objects;
+        REQUEST_OBJECTS(state){
+            return state.request_objects;
         },
+        REQUEST_VALIDATORS: (state) => {
+            return state.request_validators;
+        },
+        VAL_LEN(state){
+            return state.inputed_json.length
+        }
 
     }
 })

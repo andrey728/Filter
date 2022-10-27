@@ -7,7 +7,7 @@
   <div class="Main">
 
     <div>
-      <textarea class="input_json" cols="35" rows="35" v-model="some_json" placeholder="add JSON"></textarea>
+      <textarea class="input_json" cols="35" rows="35" v-model="some_json" placeholder="add JSON" @change="JSON_import"></textarea>
       <button class="AddButton" @click="JSON_import"> <span class="MainText">json import</span> </button>
     </div>
 
@@ -26,10 +26,12 @@
     <div class="FilterCraft" id = 'n' v-if="inported" >
       <div class="Filter_Card"
            v-for="(feel, i) in store.state.inputed_json">
+
         <Filter
             :filter-caption="feel.caption"
             :filter-id="feel.code"
             :filterType="feel.type"
+            :validators="store.getters.REQUEST_VALIDATORS[feel.code]"
 
         ></Filter>
 
@@ -38,7 +40,9 @@
     </div>
 
     
-    <div class="visible" id='vis_1'></div>
+    <div class="visible" id='vis_1'>
+      {{store.state.request_json}}
+    </div>
 
   </div>
 
@@ -113,6 +117,7 @@ const some_json = ref('[\n' +
 function JSON_import() {
   store.commit("REFRESH")
   json.value = JSON.parse(some_json.value);
+  console.log('sss',json.value)
   inported.value = true
   store.commit("SET_INPUTED_JSON_TO_STATE", JSON.parse(some_json.value))
   console.log(store.state.inputed_json)
@@ -120,132 +125,10 @@ function JSON_import() {
   for (var i=0; i < field.length; i++) {
       store.commit("GENERATE_RECURSE_OBJ", field[i])
   }
-  console.log('Формирование объектов',store.state.recuest_objects)
+  console.log('Формирование объектов',store.state.request_objects)
 
-  /*let code = 'field2'
-  for(const dic in store.state.recuest_objects) {
-    console.log(dic)
-    if (store.state.recuest_objects[dic].code === code) {
-      console.log(store.state.recuest_objects[dic].values)
-    }
-  }*/
   console.log(store.commit("TAKE",'field7'))
 
-
-
-  // далее идет ряд функций, реализовывающий функционал фильтра, но через изменения дерева в рантайме
-  // это достойно гифки "говно, переделывай", так что это дело я закоментил, но пока не почистил, пусть лежит
-/*
-  function createDiv(className, N, type){
-    var div = document.createElement(type);
-    div.className = className;
-    div.id = className + "_" + N
-    return div;
-  }
-
-  function take_div(id, obj){
-    var header = obj.caption
-    document.getElementById(id).innerHTML += header;
-  }
-
-  function createOne(Card, def, obj){
-    var div = document.createElement("div");
-    var span = document.createElement("span");
-    var input = document.createElement("input");
-    span.className = "MainText"
-    span.innerHTML += def
-    input.className = "cherecters"
-    input.placeholder = def
-    RequestContent_for_num.code = input.innerHTML
-    var ti = obj
-    input.addEventListener("change",function hh (inpt) {
-
-
-      console.log(inpt.composedPath())
-      var num_of_card = parseFloat(inpt.composedPath()[2].id.replace('Card_', ""))
-      console.log(inpt.composedPath()[2].id)
-      console.log(num_of_card)
-      obj = inpt.composedPath()[0].value
-
-      if (def === "Больше") Request_arrey[num_of_card].value.Values.GT = inpt.composedPath()[0].value
-      if (def === "Меньше") Request_arrey[num_of_card].value.Values.LT = inpt.composedPath()[0].value
-      if (def === "Равен") Request_arrey[num_of_card].value.Values.EQ = inpt.composedPath()[0].value
-      if (def === "Не равен") Request_arrey[num_of_card].value.Values.NEQ = inpt.composedPath()[0].value
-      if (def === "Содержит") Request_arrey[num_of_card].value.Values.Like = inpt.composedPath()[0].value
-      if (def === "Не содержит") Request_arrey[num_of_card].value.Values.NEQ = inpt.composedPath()[0].value
-      if (def === "Какой-то переключатель") Request_arrey[num_of_card].value.Values.GT = inpt.composedPath()[0].value
-    })
-
-    div.appendChild(span)
-    div.appendChild(input)
-
-    console.log("крафтим")
-
-
-    Card.appendChild(div)
-
-
-  }
-
-  function Feel_Filter_card(Card, obj){
-
-    if(obj.type === "number"){
-      Request_arrey.push(RequestContent_for_num)
-      console.log("1")
-      createOne(Card,'Больше', RequestContent_for_num.value.Values.GT)
-      createOne(Card,'Меньше')
-      createOne(Card,'Равен')
-      createOne(Card,'Не равен')
-    }
-    if(obj.type === "string"){
-      Request_arrey.push(RequestContent_for_str)
-      console.log("2")
-      createOne(Card,'Содержит')
-      createOne(Card,'Не содержит')
-    }
-    if(obj.type === "bool"){
-      Request_arrey.push(RequestContent_for_bool)
-      console.log("3")
-      createOne(Card,'Какой-то переключатель')
-    }
-    console.log("hjvf gblh")
-  }
-
-
-  for (var i = 0; i < json.length; i++) {
-
-
-    document.getElementById('n').appendChild(createDiv('Filter_Card', i, 'div'));
-    document.getElementById('Filter_Card_{i}'.replace('{i}', i)).appendChild(createDiv('MainText', i, 'span'));
-    take_div('MainText_{i}'.replace('{i}', i), json[i])
-
-    document.getElementById('Filter_Card_{i}'.replace('{i}', i)).appendChild(createDiv('PlussButton', i, 'button'));
-    document.getElementById('PlussButton_{i}'.replace('{i}', i)).innerHTML += "развернуть v";
-
-
-    document.getElementById('Filter_Card_{i}'.replace('{i}', i)).appendChild(createDiv('Card', i, "div"));
-    Feel_Filter_card(document.getElementById('Card_{i}'.replace('{i}', i)), json[i])
-
-
-    document.getElementById('PlussButton_{i}'.replace('{i}', i)).addEventListener('click', function(button){
-      var button_id = button.composedPath()[0].id
-      var this_card = document.getElementById(button_id.replace('PlussButton_', "Card_"))
-      console.log(button.composedPath()[0].innerHTML)
-      console.log(this_card.style)
-      if (this_card.style.display === "" || this_card.style.display === "none") {
-        this_card.style.display = "flex"
-        button.composedPath()[0].innerHTML = 'свернуть ^'
-      } else {
-        this_card.style.display = "none"
-        button.composedPath()[0].innerHTML = 'развернуть v'
-      }
-    });
-  }
-
-  console.log(Request_arrey)
-
-
-*/
 
 
 }
@@ -265,26 +148,27 @@ function choise() {
 
 // пробег по массиву объектов, заполняемому на основе
 function AddClick() {
-  for (var i = 0; i < store.state.recuest_objects.length; i++) {
-    create_requet(store.state.recuest_objects[i])
+  console.log('1')
+  console.log(store.state.request_objects)
+  for (const i in store.state.request_objects) {
+    console.log(i)
+    create_request(store.state.request_objects[i])
   }
 }
 
 // формируем вывод заполненных объектов в формате json
-function create_requet (content){
+function create_request (content){
+  console.log('2')
   json_obj = JSON.stringify(content, (key, value) =>
   {
     if (value !== null && value !== "") return value
     else if (key === "Value") return key.value
   })
-  console.log(content)
-  console.log(json_obj)
+  console.log('content',content)
+  console.log('json',json_obj)
 
-  ////// try to display
-  // я понимаю, что тут я перевожу из объектов в json и обратно, но это я сделал специально для
-  // собственного понимания работы с json
   var data = JSON.parse(json_obj);
-  console.log(data)
+  console.log('obj',data)
   var header = '<h3>Name for User: ' + data.Caption + '</h3>';
   var list = '';
   for (var i in data) {
