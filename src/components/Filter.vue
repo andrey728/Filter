@@ -15,9 +15,9 @@ export default {
 
   methods: {
     take (code) {
-      for (const i in store.state.recuest_objects) {
-        if (store.state.recuest_objects[i].code === code) {
-          return store.state.recuest_objects[i].values;
+      for (const i in store.state.request_objects) {
+        if (store.state.request_objects[i].code === code) {
+          return store.state.request_objects[i].values;
         }
       }
     }
