@@ -1,5 +1,4 @@
 
-
 <template>
   <header>
   </header>
@@ -8,35 +7,23 @@
 
     <div>
       <textarea class="input_json" cols="35" rows="35" v-model="store.state.inputed_json" placeholder="add JSON" @change="JSON_import"></textarea>
-      <button class="AddButton" @click="JSON_import"> <span class="MainText">json import</span> </button>
+
+      <div class="Panel">
+        <button class="AddButton" @click="JSON_import"> <span class="MainText">json import</span> </button>
+        <button class="RecuestButton" @click="Request"> <span class="MainText">Link</span> </button>
+      </div>
     </div>
 
-    <div class="Panel">
-    <button class="AddButton" @click="AddClick"> <span class="MainText">Add</span> </button>
-      <button class="RecuestButton" @click="Request"> <span class="MainText">Request</span> </button>
-    <select class="choise" v-model="selected" @change="choise">
-      <option disabled value=""> Please select one </option>
-      <option>Number</option>
-      <option>String</option>
-      <option>Bool</option>
-    </select>
-  </div>
-
-
-    <div class="FilterCraft" id = 'n' v-if="inported" >
+    <div class="FilterCraft" id = 'n' v-if="store.state.imported">
       <div class="Filter_Card"
            v-for="(feel, i) in JSON.parse(store.state.inputed_json)">
-
         <Filter
             :filter-caption="feel.caption"
             :filter-id="feel.code"
             :filterType="feel.type"
             :validators="store.getters.REQUEST_VALIDATORS[feel.code]"
-
         ></Filter>
-
       </div>
-
     </div>
 
     <div class="visible" id='vis_1'>
@@ -50,37 +37,25 @@
 
 
 //___________________________
-// попробовать словарь с ключем в виде поля и значением в виде реактивного объекта, включаемого в Filter
+
 <script setup>
 import { ref } from 'vue'
 import Form from "./components/Form.vue";
 import Filter from "./components/Filter.vue";
 import store from "./Store.js";
 
-console.log('fetchJSON')
 store.dispatch('fetchJSON')
-
-
-let type = ref({
-  Num: false,
-  Str: false,
-  Bool: false
-})
-
-// в этом массиве будут храниться объекты, хранящие информацию, заполненную пользователем в фильтре
-
-const selected = ref('')
 
 
 // используеться для создания файла json
 let file = new Blob()
-
 // объект json, используемый для выхоного запроса
 let json_obj;
 // массив входных объектов оыщт
 var json = ref()
-// флаг, отображающий поступление входного json
-var inported = ref()
+
+
+
 
 
 //___________TEST JSON INPUT______________
@@ -95,9 +70,6 @@ function JSON_import() {
   }
   console.log('Формирование объектов',store.state.request_objects)
 
-  console.log(store.commit("TAKE",'field7'))
-
-  inported.value = true
 
 }
 
@@ -106,21 +78,9 @@ function JSON_import() {
 
 
 
-// старая функция для определения типа (я использовал ее для генератора запроса, но теперь скорее всего она не будет акктуальна)
-function choise() {
-  type.value.Num = (selected.value === "Number")
-  type.value.Str = (selected.value === "String")
-  type.value.Bool = (selected.value==="Bool")
-  console.log(inported.value)
-}
 
-// пробег по массиву объектов, заполняемому на основе
-function AddClick() {
-  for (const i in store.state.request_objects) {
-    console.log(i)
-    create_request(store.state.request_objects[i])
-  }
-}
+
+
 
 // формируем вывод заполненных объектов в формате json
 function create_request (content){
@@ -133,26 +93,26 @@ function create_request (content){
   console.log('content',content)
   console.log('json',json_obj)
 
-  var data = JSON.parse(json_obj);
+  var data = JSON.parse(json_obj)
   console.log('obj',data)
-  var header = '<h3>Name for User: ' + data.Caption + '</h3>';
+  var header = '<h3>Name for User: ' + data.Caption + '</h3>'
   var list = '';
   for (var i in data) {
     if(typeof data[i] === "object"){
       console.log(data[i])
-      list += '<li>' + i + ': ' + '\r\n' + '[' + '\r\n';
+      list += '<li>' + i + ': ' + '\r\n' + '[' + '\r\n'
       for (var j in data[i]){
         console.log(j)
         console.log(data[i][j])
-        list += "  " + j + ': ' + data[i][j] + '\r\n';
+        list += "  " + j + ': ' + data[i][j] + '\r\n'
       }
       list += ']' + '\r\n' + '</li>';
     } else {
       list += '<li>' + i + ': ' + data[i] + '</li>';
     }
   }
-  document.getElementById('vis_1').innerHTML += header;
-  document.getElementById('vis_1').innerHTML +=  list;
+  document.getElementById('vis_1').innerHTML += header
+  document.getElementById('vis_1').innerHTML +=  list
 
   // создаем файл
   if (file.type==='application/json'){

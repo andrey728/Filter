@@ -10,13 +10,12 @@ const correctRange = (gt, lt) => {
     return !((gt - lt) >= 0)
 }
 
-const inRange = (gt, lt, num) => {
-    return (gt <= num & num >= lt)
-}
+
 
 // Create a new store instance.
 const store = createStore({
     state: {
+        imported: false,
         inputed_json: [],
         request_objects: {},
         request_validators: {},
@@ -25,7 +24,7 @@ const store = createStore({
     },
     mutations: {
         SET_INPUTED_JSON_TO_STATE: (state, inputed_json) => {
-            state.inputed_json = inputed_json;
+            state.inputed_json = inputed_json
         },
 
         GENERATE_RECURSE_OBJ: (state, field) => {
@@ -60,6 +59,7 @@ const store = createStore({
                 }
 
             }
+            state.imported = true
         },
 
         REFRESH: (state) => {
@@ -118,7 +118,7 @@ const store = createStore({
         TAKE (state, code) {
             for (const i in state.request_objects) {
                 if (state.request_objects[i].code === code) {
-                    return state.request_objects[i].values;
+                    return state.request_objects[i].value
                 }
             }
         }
@@ -127,25 +127,23 @@ const store = createStore({
 
     actions: {
         async fetchJSON(ctx) {
-            console.log('start')
             const res = await fetch(
                 'http://127.0.0.1:8000/config'
-            );
-            console.log('res', res)
+            )
             const json = await res.json()
-            console.log('json', typeof json)
+            console.log('json', json)
             ctx.commit('SET_INPUTED_JSON_TO_STATE', json)
         }
     },
     getters: {
         INPUTED_JSON(state){
-            return state.inputed_json;
+            return state.inputed_json
         },
         REQUEST_OBJECTS(state){
-            return state.request_objects;
+            return state.request_objects
         },
         REQUEST_VALIDATORS: (state) => {
-            return state.request_validators;
+            return state.request_validators
         },
         VAL_LEN(state){
             return state.inputed_json.length
@@ -154,4 +152,4 @@ const store = createStore({
     }
 })
 
-export default store;
+export default store

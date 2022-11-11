@@ -1,25 +1,42 @@
 # Filter
 
-This template should help get you started developing with Vue 3 in Vite.
+Компонент "фильтр" для генерации части запроса к источнику данных, а именно фильтр. В компоненте пользователь имеет возможность указать условия по доступным для фильтрации полям.
 
-## Recommended IDE Setup
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=johnsoncodehk.vscode-typescript-vue-plugin).
+## Состав проекта
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
+Проет состоит из фронта, в папке Client и бека в папке Server.
+Фронт написан на Vue.js с использованием Vite.
+Бек на питоне с использованием FastAPI.
 
 ## Project Setup
+
+Сперва необходимо установить node.js, а после для запускаа следующие команды.
 
 ```sh
 npm install
 ```
 
-### Compile and Hot-Reload for Development
+Для FastAPI
+
+```sh
+pip install fastapi
+
+
+pip install "uvicorn[standard]"
+```
+
+
+### Компиляция и горячая перезагрузка для разработки на фронте
 
 ```sh
 npm run dev
+```
+
+### Запуск сервера
+
+```sh
+uvicorn main:app --reload
 ```
 
 ### Compile and Minify for Production

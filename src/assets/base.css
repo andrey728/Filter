@@ -136,7 +136,7 @@ body {
     left: 435px;
     top: 64px;
 
-    background: #a6a6a6;
+    background: #131A20;
     border-radius: 20px;
 
 }
@@ -146,7 +146,7 @@ body {
     position: absolute;
     width: 182px;
     height: 51px;
-    left: -9px;
+    left: 40px;
 
     background: #3F464B;
     border-radius: 20px;
@@ -182,7 +182,7 @@ body {
     position: absolute;
     width: 159px;
     height: 51px;
-    left: 312px;
+    left: 238px;
     background: #3F464B;
     border-radius: 20px;
 }
