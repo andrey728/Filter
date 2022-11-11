@@ -7,7 +7,7 @@
   <div class="Main">
 
     <div>
-      <textarea class="input_json" cols="35" rows="35" v-model="some_json" placeholder="add JSON" @change="JSON_import"></textarea>
+      <textarea class="input_json" cols="35" rows="35" v-model="store.state.inputed_json" placeholder="add JSON" @change="JSON_import"></textarea>
       <button class="AddButton" @click="JSON_import"> <span class="MainText">json import</span> </button>
     </div>
 
@@ -25,7 +25,7 @@
 
     <div class="FilterCraft" id = 'n' v-if="inported" >
       <div class="Filter_Card"
-           v-for="(feel, i) in store.state.inputed_json">
+           v-for="(feel, i) in JSON.parse(store.state.inputed_json)">
 
         <Filter
             :filter-caption="feel.caption"
@@ -39,7 +39,6 @@
 
     </div>
 
-    
     <div class="visible" id='vis_1'>
       {{store.state.request_json}}
     </div>
@@ -58,9 +57,8 @@ import Form from "./components/Form.vue";
 import Filter from "./components/Filter.vue";
 import store from "./Store.js";
 
-
-
-
+console.log('fetchJSON')
+store.dispatch('fetchJSON')
 
 
 let type = ref({
@@ -70,8 +68,6 @@ let type = ref({
 })
 
 // в этом массиве будут храниться объекты, хранящие информацию, заполненную пользователем в фильтре
-let Request_arrey = []
-
 
 const selected = ref('')
 
@@ -85,43 +81,15 @@ let json_obj;
 var json = ref()
 // флаг, отображающий поступление входного json
 var inported = ref()
-console.log(json)
+
 
 //___________TEST JSON INPUT______________
 
-// загоняю json из таска, чтобы не вводить его каждый раз
-const some_json = ref('[\n' +
-    '\t{\n' +
-    '\t\t"code": "field1",\n' +
-    '\t\t"caption": "Стоимость",\n' +
-    '\t\t"type": "number"\n' +
-    '\t},\n' +
-    '\t{\n' +
-    '\t\t"code": "field2",\n' +
-    '\t\t"caption": "Цвет",\n' +
-    '\t\t"type": "string"\n' +
-    '\t},\n' +
-    '\t{\n' +
-    '\t\t"code": "field4",\n' +
-    '\t\t"caption": "Работает",\n' +
-    '\t\t"type": "bool"\n' +
-    '\t},\n' +
-    '\t{\n' +
-    '\t\t"code": "field7",\n' +
-    '\t\t"caption": "Название",\n' +
-    '\t\t"type": "string"\n' +
-    '\t}\n' +
-    ']')
 
 // функция импорта поступившего json в массив объектов
 function JSON_import() {
-  store.commit("REFRESH")
-  json.value = JSON.parse(some_json.value);
-  console.log('sss',json.value)
-  inported.value = true
-  store.commit("SET_INPUTED_JSON_TO_STATE", JSON.parse(some_json.value))
-  console.log(store.state.inputed_json)
-  let field = store.state.inputed_json
+  store.commit("SET_INPUTED_JSON_TO_STATE", store.state.inputed_json)
+  let field = JSON.parse(store.state.inputed_json)
   for (var i=0; i < field.length; i++) {
       store.commit("GENERATE_RECURSE_OBJ", field[i])
   }
@@ -129,7 +97,7 @@ function JSON_import() {
 
   console.log(store.commit("TAKE",'field7'))
 
-
+  inported.value = true
 
 }
 
@@ -148,8 +116,6 @@ function choise() {
 
 // пробег по массиву объектов, заполняемому на основе
 function AddClick() {
-  console.log('1')
-  console.log(store.state.request_objects)
   for (const i in store.state.request_objects) {
     console.log(i)
     create_request(store.state.request_objects[i])

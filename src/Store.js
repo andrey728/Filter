@@ -107,20 +107,6 @@ const store = createStore({
         },
 
         REQUEST_JSON: (state) => {
-/*
-            for(const i in state.request_objects){
-                state.request_json.push(
-                    JSON.stringify(state.request_objects[i], (key, value) =>
-                {
-                    if (value !== null && value !== "") {
-                        console.log('value', value)
-                        return value
-                    }
-                },2))
-
-            }
-            console.log('json', state.request_json)
-*/
             state.request_json = JSON.stringify(state.request_objects, (key, value) =>
             {
                 if (value !== null && value !== "") {
@@ -140,13 +126,15 @@ const store = createStore({
         },
 
     actions: {
-        INPUT_JSON({comit}, inputed_json) {
-            commit('SET_INPUTED_JSON_TO_STATE', inputed_json.data);
-            return inputed_json;
-        },
-        COUNT_CHANGE({comit}, new_count) {
-            commit('NEW_COUNT_TO_STATE', new_count);
-            return new_count;
+        async fetchJSON(ctx) {
+            console.log('start')
+            const res = await fetch(
+                'http://127.0.0.1:8000/config'
+            );
+            console.log('res', res)
+            const json = await res.json()
+            console.log('json', typeof json)
+            ctx.commit('SET_INPUTED_JSON_TO_STATE', json)
         }
     },
     getters: {
