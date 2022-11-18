@@ -21,8 +21,9 @@ npm install
 
 ```sh
 pip install fastapi
+```
 
-
+```sh
 pip install "uvicorn[standard]"
 ```
 
@@ -33,7 +34,7 @@ pip install "uvicorn[standard]"
 npm run dev
 ```
 
-### Запуск сервера
+### Запуск сервера (FastAPI)
 
 ```sh
 uvicorn main:app --reload
