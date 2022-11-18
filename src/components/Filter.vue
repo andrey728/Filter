@@ -15,17 +15,6 @@ export default {
     }
   },
 
-
-  methods: {
-    take (code) {
-      for (const i in store.state.request_objects) {
-        if (store.state.request_objects[i].code === code) {
-          return store.state.request_objects[i].values;
-        }
-      }
-    }
-  },
-
   components: {Form, FilterCardINT, FilterCardSTRING, FilterCardBOOL},
   props: {
     filterId: {

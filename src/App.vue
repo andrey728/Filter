@@ -69,69 +69,6 @@ function JSON_import() {
       store.commit("GENERATE_RECURSE_OBJ", field[i])
   }
   console.log('Формирование объектов',store.state.request_objects)
-
-
-}
-
-
-//___________TEST JSON INPUT______________
-
-
-
-
-
-
-
-// формируем вывод заполненных объектов в формате json
-function create_request (content){
-  console.log('2')
-  json_obj = JSON.stringify(content, (key, value) =>
-  {
-    if (value !== null && value !== "") return value
-    else if (key === "Value") return key.value
-  })
-  console.log('content',content)
-  console.log('json',json_obj)
-
-  var data = JSON.parse(json_obj)
-  console.log('obj',data)
-  var header = '<h3>Name for User: ' + data.Caption + '</h3>'
-  var list = '';
-  for (var i in data) {
-    if(typeof data[i] === "object"){
-      console.log(data[i])
-      list += '<li>' + i + ': ' + '\r\n' + '[' + '\r\n'
-      for (var j in data[i]){
-        console.log(j)
-        console.log(data[i][j])
-        list += "  " + j + ': ' + data[i][j] + '\r\n'
-      }
-      list += ']' + '\r\n' + '</li>';
-    } else {
-      list += '<li>' + i + ': ' + data[i] + '</li>';
-    }
-  }
-  document.getElementById('vis_1').innerHTML += header
-  document.getElementById('vis_1').innerHTML +=  list
-
-  // создаем файл
-  if (file.type==='application/json'){
-    file = new Blob(
-        // сериализуем данные
-        // (о чем и отмечал, что перевожу туда-обратно этот измученный json, мне было интересно глянуть как он себя ведет)
-        [file,",", JSON.stringify(data)], {
-          type: 'application/json'
-        }
-    )
-  }
-  else {
-    file = new Blob(
-        // сериализуем данные
-        [JSON.stringify(data)], {
-          type: 'application/json'
-        }
-    )
-  }
 }
 
 
@@ -142,7 +79,6 @@ function Request() {
         type: 'application/json'
       }
   )
-
   // добавление ссылочки на скачивание json файла
   // создаем элемент
   const link = document.createElement('a')
