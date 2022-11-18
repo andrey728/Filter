@@ -1,14 +1,6 @@
 import { createApp } from 'vue'
 import { createStore } from 'vuex'
-
-//const minLength = num => val => val.length >= num
-const minLength = (num, val) => {
-    return (val.length >= num)
-}
-
-const correctRange = (gt, lt) => {
-    return !((gt - lt) >= 0)
-}
+import {minLength, correctRange} from "./use/Valid.js";
 
 
 
@@ -43,21 +35,17 @@ const store = createStore({
                     EQ: null,
                     NEQ: null
                 }
-
-
             }
             if (field.type === 'string') {
                 state.request_objects[field.code] = {
                     Like: null,
                     NEQ: null
                 }
-
             }
             if (field.type === 'bool') {
                 state.request_objects[field.code] = {
                     EQ: null
                 }
-
             }
             state.imported = true
         },
@@ -148,7 +136,6 @@ const store = createStore({
         VAL_LEN(state){
             return state.inputed_json.length
         }
-
     }
 })
 

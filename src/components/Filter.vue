@@ -1,6 +1,9 @@
 <script lang="ts">
 import {defineComponent, ref} from "vue";
 import Form from "../components/Form.vue";
+import FilterCardINT from "../components/FilterCardINT.vue";
+import FilterCardSTRING from "../components/FilterCardSTRING.vue";
+import FilterCardBOOL from "../components/FilterCardBOOL.vue";
 import store from "../Store.js";
 import {mapMutations,mapGetters} from "vuex";
 
@@ -23,7 +26,7 @@ export default {
     }
   },
 
-  components: {Form},
+  components: {Form, FilterCardINT, FilterCardSTRING, FilterCardBOOL},
   props: {
     filterId: {
       type: String,
@@ -44,7 +47,6 @@ export default {
   },
   setup(props) {
     console.log(props.filterType)
-
   }
 }
 
@@ -60,90 +62,32 @@ export default {
           </button>
   </span>
 
-  <form class="Card" v-bind:id="filterId" v-show="filterType==='number' && show">
-
-    <Form
-        placeholder="Больше"
-        inputType="number"
-        :card-i-d="filterId"
-        :filter-params="'GT'"
+  <div v-show="filterType==='number' && show">
+    <FilterCardINT
+        :filter-caption="filterCaption"
+        :filter-id="filterId"
+        :filterType="filterType"
         :validators="validators"
-    ></Form>
+    ></FilterCardINT>
+  </div>
 
-    <Form
-        placeholder="Меньше"
-        inputTypr="number"
-        :card-i-d="filterId"
-        :filter-params="'LT'"
+
+  <div v-show="filterType==='string' && show">
+    <FilterCardSTRING
+        :filter-caption="filterCaption"
+        :filter-id="filterId"
+        :filterType="filterType"
         :validators="validators"
-    ></Form>
-    <Form v-if="!validators.select_range"
-        placeholder="Равен"
-        inputTypr="number"
-        :card-i-d="filterId"
-        :filter-params="'EQ'"
-        :validators="validators"
-    ></Form>
-    <Form v-else
-          placeholder="Равен"
-          inputTypr="number"
-          :card-i-d="filterId"
-          :filter-params="'EQ'"
-          :validators="validators"
-          style="background: #9C9A9A"
-          disabled
-    ></Form>
-    <Form v-if="!validators.select_range"
-        placeholder="Не равен"
-        inputTypr="number"
-        :card-i-d="filterId"
-        :filter-params="'NEQ'"
-        :validators="validators"
-    ></Form>
-    <Form v-else
-        placeholder="Не равен"
-        inputTypr="number"
-        :card-i-d="filterId"
-        :filter-params="'NEQ'"
-        :validators="validators"
-          style="background: #9C9A9A"
-          disabled
-    ></Form>
-
-    <div v-if="validators">
-      <h1
-          class="MainText"
-          v-if="validators.errors"
-          style="color: #ee4c4c; margin: 0px; font-size: 19px"> Некорректные данные диапозона! </h1>
-    </div>
-
-  </form>
-
-
-  <div class="Card" v-bind:id="filterId" v-show="filterType==='string' && show">
-    <Form
-        placeholder="Содержит"
-        inputType="text"
-        :card-i-d="filterId"
-        :filter-params="'Like'"
-    ></Form>
-    <Form
-        placeholder="Не содержит"
-        inputType="text"
-        :card-i-d="filterId"
-        :filter-params="'NEQ'"
-    ></Form>
+    ></FilterCardSTRING>
   </div>
 
   <div class="Card" v-bind:id="filterId" v-show="filterType==='bool' && show">
-    <span class="Min_Panel">
-          <h3 class="MainText">Переключатель</h3>
-          <Form
-              inputType="checkbox"
-              :card-i-d="filterId"
-              :filter-params="'NEQ'"
-          ></Form>
-  </span>
+    <FilterCardBOOL
+        :filter-caption="filterCaption"
+        :filter-id="filterId"
+        :filterType="filterType"
+        :validators="validators"
+    ></FilterCardBOOL>
   </div>
 
 
