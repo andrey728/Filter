@@ -45,7 +45,7 @@ export default {
 <template>
   <span class="Min_Panel">
           <h1 class="MainText">{{filterCaption}}</h1>
-          <button class="PlussButton" @click="show = !show; take(filterId)">
+          <button class="PlussButton" @click="show = !show">
             <span class="MainText" v-if="!show">Развернуть</span>
             <span class="MainText" v-if="show">Свернуть</span>
           </button>

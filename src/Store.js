@@ -1,8 +1,8 @@
 import { createApp } from 'vue'
 import { createStore } from 'vuex'
 import {minLength, correctRange} from "./use/Valid.js";
-
-
+import {typesDefault} from "./StoreModules/entitys.js"
+import {validatorsDefault} from "./StoreModules/entitysValidators.js"
 
 // Create a new store instance.
 const store = createStore({
@@ -12,7 +12,6 @@ const store = createStore({
         request_objects: {},
         request_validators: {},
         request_json: ''
-
     },
     mutations: {
         SET_INPUTED_JSON_TO_STATE: (state, inputed_json) => {
@@ -20,32 +19,21 @@ const store = createStore({
         },
 
         GENERATE_RECURSE_OBJ: (state, field) => {
-            state.request_validators[field.code] = {
-                errors: false,
-                select_range: false,
-                minLength: {}
-            }
+
+            const types = typesDefault();
+            const validators = validatorsDefault();
 
             if (field.type === 'number') {
-                state.request_objects[field.code] = {
-                    GT: null,
-                    LT: null,
-                    GTE: null,
-                    LTE: null,
-                    EQ: null,
-                    NEQ: null
-                }
+                state.request_objects[field.code] = types[field.type]
+                state.request_validators[field.code] = validators[field.type]
             }
             if (field.type === 'string') {
-                state.request_objects[field.code] = {
-                    Like: null,
-                    NEQ: null
-                }
+                state.request_objects[field.code] = types[field.type]
+                state.request_validators[field.code] = validators[field.type]
             }
             if (field.type === 'bool') {
-                state.request_objects[field.code] = {
-                    EQ: null
-                }
+                state.request_objects[field.code] = types[field.type]
+                state.request_validators[field.code] = validators[field.type]
             }
             state.imported = true
         },
@@ -66,7 +54,6 @@ const store = createStore({
                 ||
                 state.request_validators[payload.code].minLength['LT']
             )
-
 
             // проверка корявости диапозона
             if(state.request_validators[payload.code].select_range) {
