@@ -4,6 +4,10 @@ import {minLength, correctRange} from "./use/Valid.js";
 import {typesDefault} from "./StoreModules/entitys.js"
 import {validatorsDefault} from "./StoreModules/entitysValidators.js"
 
+// Git ignore
+// Обработка при отсутствии чтения сервера
+// component is
+
 // Create a new store instance.
 const store = createStore({
     state: {
@@ -105,6 +109,8 @@ const store = createStore({
             const res = await fetch(
                 'http://127.0.0.1:8000/config'
             )
+                .catch(err => alert("Ошибка 404, у вас питон не обнаружен (^v^)."))
+
             const json = await res.json()
             console.log('json', json)
             ctx.commit('SET_INPUTED_JSON_TO_STATE', json)

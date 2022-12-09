@@ -4,7 +4,7 @@ import Form from "../components/Form.vue";
 
 
 export default {
-  name: "FilterCardINT",
+  name: "number",
 
   components: {Form},
   props: {

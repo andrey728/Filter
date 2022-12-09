@@ -6,7 +6,14 @@
   <div class="Main">
 
     <div>
-      <textarea class="input_json" cols="35" rows="35" v-model="store.state.inputed_json" placeholder="add JSON" @change="JSON_import"></textarea>
+      <textarea
+          class="input_json"
+          cols="35"
+          rows="35"
+          v-model="store.state.inputed_json"
+          placeholder="add JSON"
+          @change="JSON_import">
+      </textarea>
 
       <div class="Panel">
         <button class="AddButton" @click="JSON_import"> <span class="MainText">json import</span> </button>
@@ -17,12 +24,12 @@
     <div class="FilterCraft" id = 'n' v-if="store.state.imported">
       <div class="Filter_Card"
            v-for="(feel, i) in JSON.parse(store.state.inputed_json)">
-        <Filter
+        <DynamicComponent
             :filter-caption="feel.caption"
             :filter-id="feel.code"
             :filterType="feel.type"
             :validators="store.getters.REQUEST_VALIDATORS[feel.code]"
-        ></Filter>
+        ></DynamicComponent>
       </div>
     </div>
 
@@ -40,8 +47,7 @@
 
 <script setup>
 import { ref } from 'vue'
-import Form from "./components/Form.vue";
-import Filter from "./components/Filter.vue";
+import DynamicComponent from "./components/DynamicComponent.vue";
 import store from "./Store.js";
 
 store.dispatch('fetchJSON')
@@ -49,16 +55,11 @@ store.dispatch('fetchJSON')
 
 // используеться для создания файла json
 let file = new Blob()
-// объект json, используемый для выхоного запроса
-let json_obj;
 // массив входных объектов оыщт
 var json = ref()
 
 
 
-
-
-//___________TEST JSON INPUT______________
 
 
 // функция импорта поступившего json в массив объектов
@@ -70,7 +71,6 @@ function JSON_import() {
   }
   console.log('Формирование объектов',store.state.request_objects)
 }
-
 
 function Request() {
   file = new Blob(

@@ -1,21 +1,21 @@
 <script lang="ts">
 import {defineComponent, ref} from "vue";
 import Form from "../components/Form.vue";
-import FilterCardINT from "../components/FilterCardINT.vue";
-import FilterCardSTRING from "../components/FilterCardSTRING.vue";
-import FilterCardBOOL from "../components/FilterCardBOOL.vue";
+import number from "../components/FilterCardINT.vue";
+import string from "../components/FilterCardSTRING.vue";
+import bool from "../components/FilterCardBOOL.vue";
 import store from "../Store.js";
 import {mapMutations,mapGetters} from "vuex";
 
 export default {
-  name: "Filter",
+  name: "DynamicComponent",
   data() {
     return {
       show: false,
     }
   },
 
-  components: {Form, FilterCardINT, FilterCardSTRING, FilterCardBOOL},
+  components: {Form, number, string, bool},
   props: {
     filterId: {
       type: String,
@@ -28,9 +28,6 @@ export default {
     filterType: {
       type: String,
       default: ""
-    },
-    filterValue: {
-      type: ref('гусеница')
     },
     validators: {}
   },
@@ -51,33 +48,16 @@ export default {
           </button>
   </span>
 
-  <div v-show="filterType==='number' && show">
-    <FilterCardINT
+  <div v-show="show">
+    <component
+        :is="filterType"
         :filter-caption="filterCaption"
         :filter-id="filterId"
         :filterType="filterType"
         :validators="validators"
-    ></FilterCardINT>
+    ></component>
   </div>
 
-
-  <div v-show="filterType==='string' && show">
-    <FilterCardSTRING
-        :filter-caption="filterCaption"
-        :filter-id="filterId"
-        :filterType="filterType"
-        :validators="validators"
-    ></FilterCardSTRING>
-  </div>
-
-  <div class="Card" v-bind:id="filterId" v-show="filterType==='bool' && show">
-    <FilterCardBOOL
-        :filter-caption="filterCaption"
-        :filter-id="filterId"
-        :filterType="filterType"
-        :validators="validators"
-    ></FilterCardBOOL>
-  </div>
 
 
 </template>

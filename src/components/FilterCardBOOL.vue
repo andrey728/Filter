@@ -3,7 +3,7 @@ import Form from "../components/Form.vue";
 
 
 export default {
-  name: "FilterCardBOOL",
+  name: "bool",
 
   components: {Form},
   props: {

@@ -3,7 +3,7 @@ import Form from "../components/Form.vue";
 
 
 export default {
-  name: "FilterCardSTRING",
+  name: "string",
 
   components: {Form},
   props: {
