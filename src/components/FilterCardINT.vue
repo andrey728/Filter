@@ -8,6 +8,8 @@ export default {
 
   components: {Form},
   props: {
+    feelInfo:{
+    },
     filterId: {
       type: String,
       default: ""
@@ -28,32 +30,32 @@ export default {
 
 
 <template>
-  <div class="Card" v-bind:id="filterId">
+  <div class="Card" v-bind:id="feelInfo.code">
     <Form
         placeholder="Больше"
         inputType="number"
-        :card-i-d="filterId"
+        :card-i-d="feelInfo.code"
         :filter-params="'GT'"
         :validators="validators"
     ></Form>
     <Form
         placeholder="Меньше"
         inputTypr="number"
-        :card-i-d="filterId"
+        :card-i-d="feelInfo.code"
         :filter-params="'LT'"
         :validators="validators"
     ></Form>
     <Form v-if="!validators.select_range"
           placeholder="Равен"
           inputTypr="number"
-          :card-i-d="filterId"
+          :card-i-d="feelInfo.code"
           :filter-params="'EQ'"
           :validators="validators"
     ></Form>
     <Form v-else
           placeholder="Равен"
           inputTypr="number"
-          :card-i-d="filterId"
+          :card-i-d="feelInfo.code"
           :filter-params="'EQ'"
           :validators="validators"
           style="background: #9C9A9A"
@@ -62,14 +64,14 @@ export default {
     <Form v-if="!validators.select_range"
           placeholder="Не равен"
           inputTypr="number"
-          :card-i-d="filterId"
+          :card-i-d="feelInfo.code"
           :filter-params="'NEQ'"
           :validators="validators"
     ></Form>
     <Form v-else
           placeholder="Не равен"
           inputTypr="number"
-          :card-i-d="filterId"
+          :card-i-d="feelInfo.code"
           :filter-params="'NEQ'"
           :validators="validators"
           style="background: #9C9A9A"

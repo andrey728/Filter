@@ -17,6 +17,8 @@ export default {
 
   components: {Form, number, string, bool},
   props: {
+    feelInfo:{
+    },
     filterId: {
       type: String,
       default: ""
@@ -41,7 +43,7 @@ export default {
 
 <template>
   <span class="Min_Panel">
-          <h1 class="MainText">{{filterCaption}}</h1>
+          <h1 class="MainText">{{feelInfo.caption}}</h1>
           <button class="PlussButton" @click="show = !show">
             <span class="MainText" v-if="!show">Развернуть</span>
             <span class="MainText" v-if="show">Свернуть</span>
@@ -50,10 +52,8 @@ export default {
 
   <div v-show="show">
     <component
-        :is="filterType"
-        :filter-caption="filterCaption"
-        :filter-id="filterId"
-        :filterType="filterType"
+        :is="feelInfo.type"
+        :feel-info="feelInfo"
         :validators="validators"
     ></component>
   </div>

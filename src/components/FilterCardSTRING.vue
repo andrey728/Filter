@@ -7,6 +7,8 @@ export default {
 
   components: {Form},
   props: {
+    feelInfo:{
+    },
     filterId: {
       type: String,
       default: ""
@@ -26,17 +28,17 @@ export default {
 
 
 <template>
-  <div class="Card" v-bind:id="filterId">
+  <div class="Card" v-bind:id="feelInfo.code">
     <Form
         placeholder="Содержит"
         inputType="text"
-        :card-i-d="filterId"
+        :card-i-d="feelInfo.code"
         :filter-params="'Like'"
     ></Form>
     <Form
         placeholder="Не содержит"
         inputType="text"
-        :card-i-d="filterId"
+        :card-i-d="feelInfo.code"
         :filter-params="'NEQ'"
     ></Form>
   </div>

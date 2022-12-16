@@ -25,9 +25,7 @@
       <div class="Filter_Card"
            v-for="(feel, i) in JSON.parse(store.state.inputed_json)">
         <DynamicComponent
-            :filter-caption="feel.caption"
-            :filter-id="feel.code"
-            :filterType="feel.type"
+            :feel-info="feel"
             :validators="store.getters.REQUEST_VALIDATORS[feel.code]"
         ></DynamicComponent>
       </div>

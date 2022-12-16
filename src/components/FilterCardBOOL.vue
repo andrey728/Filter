@@ -7,6 +7,8 @@ export default {
 
   components: {Form},
   props: {
+    feelInfo:{
+    },
     filterId: {
       type: String,
       default: ""
@@ -31,7 +33,7 @@ export default {
       <h3 class="MainText">Переключатель</h3>
       <Form
           inputType="checkbox"
-          :card-i-d="filterId"
+          :card-i-d="feelInfo.code"
           :filter-params="'NEQ'"
       ></Form>
     </span>
